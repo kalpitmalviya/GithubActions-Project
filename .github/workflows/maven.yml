@@ -55,7 +55,7 @@ jobs:
       run: sudo apt install gitleaks -y 
 
     - name: Gitleaks code scan  # To scan any hardcoded sensitive data
-      run: gitleaks detects source . -r gitleaks-report.json
+      run: gitleaks detect source . -r gitleaks-report.json
       
         
 
