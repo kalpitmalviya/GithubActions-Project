@@ -36,6 +36,7 @@ jobs:
 
   security-check:
     runs-on: ubuntu-latest
+    needs: compile  # it will be executed only after compile job
     
     steps:
     - uses: actions/checkout@v4
@@ -51,7 +52,7 @@ jobs:
       run: trivy fs --format table -o fs-report.json .
 
     - name: gitleaks Installation
-      run: sudo api install gitleaks -y 
+      run: sudo apt install gitleaks -y 
 
     - name: Gitleaks code scan  # To scan any hardcoded sensitive data
       run: gitleaks detects source . -r gitleaks-report.json
