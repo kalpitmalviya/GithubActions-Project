@@ -13,7 +13,7 @@ jobs:
   compile:  # Defining a job named 'compile'
 
     # Specifies the runner environment: latest Ubuntu available in GitHub-hosted runners
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
 
     steps:
     # Step 1: Checks out your repository under $GITHUB_WORKSPACE, so it's accessible by later steps
@@ -35,7 +35,7 @@ jobs:
       # --file pom.xml ensures Maven uses the correct project descriptor if not in the root directory
 
   security-check:
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     needs: compile  # it will be executed only after compile job
     
     steps:
