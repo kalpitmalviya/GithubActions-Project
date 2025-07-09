@@ -1,25 +1,61 @@
+# This workflow is for building a Java project using Maven on every push or pull request to the main branch.
+
 name: Java CI with Maven
 
+# This section defines on which events the workflow should run
 on:
   push:
-    branches: [ "main" ]
+    branches: [ "main" ]  # Run workflow on push to the main branch
   pull_request:
-    branches: [ "main" ]
+    branches: [ "main" ]  # Run workflow on pull requests targeting the main branch
 
 jobs:
-  compile:
+  compile:  # Defining a job named 'compile'
 
+    # Specifies the runner environment: latest Ubuntu available in GitHub-hosted runners
     runs-on: ubuntu-latest
 
     steps:
+    # Step 1: Checks out your repository under $GITHUB_WORKSPACE, so it's accessible by later steps
     - uses: actions/checkout@v4
+
+    # Step 2: Sets up Java Development Kit (JDK) version 17 using the Temurin distribution
     - name: Set up JDK 17
       uses: actions/setup-java@v4
       with:
-        java-version: '17'
-        distribution: 'temurin'
-        cache: maven
+        java-version: '17'        # Specifies the Java version to install
+        distribution: 'temurin'   # Temurin is a popular OpenJDK distribution
+        cache: maven              # Caches your Maven dependencies for faster builds
+
+    # Step 3: Runs Maven to build the project
     - name: Build with Maven
       run: mvn -B package --file pom.xml
+      # -B is for batch mode (useful in CI to reduce logging noise)
+      # package is the Maven goal to compile and package the code (produces target/*.jar or .war file)
+      # --file pom.xml ensures Maven uses the correct project descriptor if not in the root directory
 
-   
+  security-check:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v4
+    - name: Trivy Installation
+      run: |
+        sudo apt-get install wget apt-transport-https gnupg lsb-release
+        wget -qO - https://aquasecurity.github.io/trivy-repo/deb/public.key | sudo apt-key add -
+        echo deb https://aquasecurity.github.io/trivy-repo/deb $(lsb_release -sc) main | sudo tee -a /etc/apt/sources.list.d/trivy.list
+        sudo apt-get update
+        sudo apt-get install trivy
+    
+    - name: Trivy FS scan
+      run: trivy fs --format table -o fs-report.json .
+
+    - name: gitleaks Installation
+      run: sudo api install gitleaks -y 
+
+    - name: Gitleaks code scan  # To scan any hardcoded sensitive data
+      run: gitleaks detects source . -r gitleaks-report.json
+      
+        
+
+      
