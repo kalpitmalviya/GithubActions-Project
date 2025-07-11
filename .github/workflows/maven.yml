@@ -9,11 +9,14 @@ on:
   pull_request:
     branches: [ "main" ]  # Run workflow on pull requests targeting the main branch
 
+  #allows you to run manually from action tab
+  workflow_dispatch:
+
 jobs:
   compile:  # Defining a job named 'compile'
 
     # Specifies the runner environment: latest Ubuntu available in GitHub-hosted runners
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
 
     steps:
     # Step 1: Checks out your repository under $GITHUB_WORKSPACE, so it's accessible by later steps
