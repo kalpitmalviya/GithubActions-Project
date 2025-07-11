@@ -10,7 +10,7 @@ on:
     branches: [ "main" ]  # Run workflow on pull requests targeting the main branch
 
   #allows you to run manually from action tab
-  #workflow_dispatch:
+  workflow_dispatch:
 
 jobs:
   compile:  # Defining a job named 'compile'
